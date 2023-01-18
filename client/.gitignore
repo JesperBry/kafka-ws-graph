@@ -1,0 +1,69 @@
+# Created by https://www.toptal.com/developers/gitignore/api/react,visualstudiocode,dotenv,cmake
+
+# Edit at https://www.toptal.com/developers/gitignore?templates=react,visualstudiocode,dotenv,cmake
+
+### CMake
+
+CMakeLists.txt.user
+CMakeCache.txt
+CMakeFiles
+CMakeScripts
+Testing
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+CTestTestfile.cmake
+\_deps
+
+### CMake Patch
+
+# External projects
+
+\*-prefix/
+
+### dotenv
+
+.env
+
+### react
+
+.DS\_\*
+_.log
+logs
+\*\*/_.backup._
+\*\*/_.back.\*
+
+node_modules
+bower_components
+
+_.sublime_
+
+psd
+thumb
+sketch
+
+### VisualStudioCode
+
+.vscode/_
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+!.vscode/_.code-snippets
+
+# Local History for Visual Studio Code
+
+.history/
+
+# Built Visual Studio Code Extensions
+
+\*.vsix
+
+### VisualStudioCode Patch
+
+# Ignore all local history of files
+
+.history
+.ionide
+
+# End of https://www.toptal.com/developers/gitignore/api/react,visualstudiocode,dotenv,cmake

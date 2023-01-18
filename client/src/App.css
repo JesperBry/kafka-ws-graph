@@ -1,0 +1,15 @@
+.App {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.Card {
+  width: fit-content;
+  background-color: whitesmoke;
+  padding: 2rem;
+  box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+}
+
+.recharts-legend-wrapper {
+  padding-top: 2rem;
+}

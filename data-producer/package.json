@@ -1,0 +1,19 @@
+{
+  "name": "data-producer",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "avsc": "^5.7.7",
+    "dotenv": "^16.0.3",
+    "node-rdkafka": "^2.14.0",
+    "os-utils": "^0.0.14"
+  }
+}
