@@ -1,5 +1,5 @@
 import React from "react";
-import { CartesianGrid, Legend, Line, LineChart } from "recharts";
+import { CartesianGrid, Legend, Line, LineChart, Tooltip } from "recharts";
 import { Events } from "./@types";
 
 type Props = {
@@ -23,6 +23,11 @@ const LineGraph = ({ data, dkey, name }: Props) => {
         }}
       >
         <CartesianGrid vertical={false} />
+        <Tooltip
+          labelStyle={{ display: "none" }}
+          wrapperStyle={{ outline: "none" }}
+          cursor={false}
+        />
         <Legend verticalAlign="bottom" height={5} />
         <Line
           type="linear"
