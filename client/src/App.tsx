@@ -1,14 +1,17 @@
 import React, { useEffect } from "react";
 import { useQueueState } from "./hooks/useQueueState";
 import { io } from "socket.io-client";
+import LineGraph from "./components/LineGraph";
+import { Events } from "./components/@types";
 
 import "./App.css";
-import LineGraph from "./components/LineGraph";
 
-const socket = io("http://localhost:5000");
+const SOCKET_URL: string = process.env.REACT_APP_SOCKET_URL || "";
+
+const socket = io(SOCKET_URL);
 
 function App() {
-  const [list, controls] = useQueueState<any>([]);
+  const [list, controls] = useQueueState<Events>([]);
   const { enqueue, peek, dequeue, length } = controls;
 
   useEffect(() => {

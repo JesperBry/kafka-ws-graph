@@ -3,7 +3,7 @@ import { CartesianGrid, Legend, Line, LineChart, Tooltip } from "recharts";
 import { Events } from "./@types";
 
 type Props = {
-  data: Array<Events>;
+  data: Events[];
   dkey: string;
   name: string;
 };
