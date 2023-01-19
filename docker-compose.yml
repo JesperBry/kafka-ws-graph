@@ -69,3 +69,14 @@ services:
       - producer
     env_file:
       - ./client/.env
+
+  init-kafka:
+    image: confluentinc/cp-kafka:7.3.0
+    depends_on:
+      - broker
+    entrypoint: ["/bin/sh", "-c"]
+    command: |
+      "
+      echo -e '$${\033[0;33m}Creating kafka topics$${\033[0m}'
+      kafka-topics --bootstrap-server broker:9092 --create --if-not-exists --partitions 1 --replication-factor 1 --topic events
+      "
