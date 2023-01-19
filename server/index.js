@@ -9,6 +9,9 @@ import eventType from "./eventType.js";
 const port = 5000 || parseInt(process.env.PORT);
 const topics = process.env.KAFKA_TOPICS.split(",");
 
+const BROKER =
+  process.env === "production" ? process.env.KAFKA_BROKER : "localhost:9092";
+
 const app = express();
 
 const server = app.listen(port, () => {
@@ -23,7 +26,7 @@ const io = new Server(server, {
 const consumer = Kafka.KafkaConsumer(
   {
     "group.id": "kafka",
-    "metadata.broker.list": process.env.KAFKA_BROKER,
+    "metadata.broker.list": BROKER,
   },
   {}
 );

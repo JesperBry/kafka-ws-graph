@@ -5,9 +5,12 @@ import Kafka from "node-rdkafka";
 import eventType from "./eventType.js";
 import os from "os-utils";
 
+const BROKER =
+  process.env === "production" ? process.env.KAFKA_BROKER : "localhost:9092";
+
 const streem = Kafka.Producer.createWriteStream(
   {
-    "metadata.broker.list": process.env.KAFKA_BROKER,
+    "metadata.broker.list": BROKER,
   },
   {},
   { topic: process.env.KAFKA_TOPICS }

@@ -9,3 +9,7 @@ run: build
 
 down:
 	docker-compose down
+
+kafka-dev:
+	docker-compose -f docker-compose.dev.yml build broker;
+	docker-compose -f docker-compose.dev.yml up broker;
