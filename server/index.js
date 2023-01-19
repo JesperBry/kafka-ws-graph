@@ -10,7 +10,9 @@ const port = 5000 || parseInt(process.env.PORT);
 const topics = process.env.KAFKA_TOPICS.split(",");
 
 const BROKER =
-  process.env === "production" ? process.env.KAFKA_BROKER : "localhost:9092";
+  process.env.NODE_ENV === "production"
+    ? process.env.KAFKA_BROKER
+    : "localhost:9092";
 
 const app = express();
 
@@ -42,7 +44,7 @@ io.on("connection", (socket) => {
 
 consumer
   .on("ready", () => {
-    console.log("Consumer ready");
+    console.log("\x1b[32m%s\x1b[0m", "Consumer ready");
     consumer.subscribe(topics);
     consumer.consume();
   })

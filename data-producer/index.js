@@ -6,9 +6,11 @@ import eventType from "./eventType.js";
 import os from "os-utils";
 
 const BROKER =
-  process.env === "production" ? process.env.KAFKA_BROKER : "localhost:9092";
+  process.env.NODE_ENV === "production"
+    ? process.env.KAFKA_BROKER
+    : "localhost:9092";
 
-const streem = Kafka.Producer.createWriteStream(
+const stream = Kafka.Producer.createWriteStream(
   {
     "metadata.broker.list": BROKER,
   },
@@ -22,13 +24,18 @@ const sendEvent = (cpu) => {
     memory: os.freememPercentage(),
     uptime: os.processUptime(),
   };
-  const result = streem.write(eventType.toBuffer(event));
+  const result = stream.write(eventType.toBuffer(event));
   if (result) {
     console.log("Event sucess");
   } else {
-    console.log("Event failed!");
+    console.log("\x1b[30m%s\x1b[0m", "Event failed!");
   }
 };
+
+stream.on("error", function (err) {
+  console.log("\x1b[30m%s\x1b[0m", "Error in our kafka stream!");
+  console.error(err);
+});
 
 setInterval(() => {
   os.cpuUsage((cpuPercent) => {
