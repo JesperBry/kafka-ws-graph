@@ -6,9 +6,22 @@ type Props = {
   data: Events[];
   dkey: string;
   name: string;
+  theme: string;
 };
 
-const LineGraph = ({ data, dkey, name }: Props) => {
+const LineGraph = ({ data, dkey, name, theme }: Props) => {
+  const themes: any = {
+    light: {
+      backgroundColor: "#ffffff",
+      stroke: "#2d3436",
+    },
+    dark: {
+      backgroundColor: "#2d3436",
+      borderColor: "#b2bec3",
+      stroke: "#ffffff",
+    },
+  };
+
   return (
     <div className="Card">
       <LineChart
@@ -26,6 +39,7 @@ const LineGraph = ({ data, dkey, name }: Props) => {
         <Tooltip
           labelStyle={{ display: "none" }}
           wrapperStyle={{ outline: "none" }}
+          contentStyle={themes[theme]}
           cursor={false}
         />
         <Legend verticalAlign="bottom" height={5} />
@@ -34,7 +48,7 @@ const LineGraph = ({ data, dkey, name }: Props) => {
           isAnimationActive={false}
           dataKey={dkey}
           name={name}
-          stroke="#2c3e50"
+          stroke={themes[theme].stroke}
           dot={false}
         />
       </LineChart>
