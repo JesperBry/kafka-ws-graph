@@ -13,6 +13,7 @@ const LineGraph = ({ data, dkey, name, theme }: Props) => {
   const themes: any = {
     light: {
       backgroundColor: "#ffffff",
+      borderColor: "#b2bec3",
       stroke: "#2d3436",
     },
     dark: {

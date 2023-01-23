@@ -6,6 +6,7 @@ import { Events } from "./components/@types";
 import ThemeIcon from "./assets/themeIcon";
 
 import "./App.css";
+import usePersistedState from "./hooks/usePersistedState";
 
 const SOCKET_URL: string = process.env.REACT_APP_SOCKET_URL || "";
 
@@ -14,7 +15,10 @@ const socket = io(SOCKET_URL);
 function App() {
   const [list, controls] = useQueueState<Events>([]);
   const { enqueue, peek, dequeue, length } = controls;
-  const [theme, setTheme] = useState<"light" | "dark">("light");
+  const [theme, setTheme] = usePersistedState<"light" | "dark">(
+    "theme",
+    "light"
+  );
 
   const toggleTheme = () => {
     if (theme === "light") {
@@ -29,15 +33,15 @@ function App() {
   }, [theme]);
 
   useEffect(() => {
-    function addToQueue(data: any) {
+    function addToQueue(data: Events[]) {
       enqueue(data);
     }
 
-    socket.on("update", (data) => {
+    socket.on("update", (data: Events[]) => {
       if (length === 60) {
         dequeue();
       } else {
-        addToQueue(JSON.parse(data));
+        addToQueue(data);
       }
     });
   }, [dequeue, enqueue, length]);

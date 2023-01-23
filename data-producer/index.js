@@ -28,12 +28,12 @@ const sendEvent = (cpu) => {
   if (result) {
     console.log("Event sucess");
   } else {
-    console.log("\x1b[30m%s\x1b[0m", "Event failed!");
+    console.log("\x1b[31m%s\x1b[0m", "Event failed!");
   }
 };
 
 stream.on("error", function (err) {
-  console.log("\x1b[30m%s\x1b[0m", "Error in our kafka stream!");
+  console.log("\x1b[31m%s\x1b[0m", "Error in our kafka stream!");
   console.error(err);
 });
 
