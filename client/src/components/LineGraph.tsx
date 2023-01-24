@@ -1,5 +1,13 @@
 import React from "react";
-import { CartesianGrid, Legend, Line, LineChart, Tooltip } from "recharts";
+import {
+  CartesianGrid,
+  Legend,
+  Line,
+  LineChart,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
 import { ValueType } from "recharts/types/component/DefaultTooltipContent";
 import { Events } from "./@types";
 
@@ -30,9 +38,11 @@ const LineGraph = ({ data, dkey, name, theme, type }: Props) => {
       return value.toLocaleString("en-US", { style: "percent" });
     } else {
       return (
-        value.toLocaleString("en-US", {
-          maximumFractionDigits: 2,
-        }) + " ms"
+        value
+          .toLocaleString("en-US", {
+            maximumFractionDigits: 2,
+          })
+          .replaceAll(",", " ") + " ms"
       );
     }
   };
@@ -50,6 +60,8 @@ const LineGraph = ({ data, dkey, name, theme, type }: Props) => {
           bottom: 0,
         }}
       >
+        <XAxis domain={[0, 60]} tickCount={60} hide />
+        <YAxis hide />
         <CartesianGrid vertical={false} />
         <Tooltip
           labelStyle={{ display: "none" }}
