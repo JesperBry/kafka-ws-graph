@@ -48,6 +48,7 @@ const run = async () => {
       });
 
       callSockets(io, events);
+      await heartbeat();
     },
     /* eachMessage: async ({ topic, partition, message }) => {
       const event = eventType.fromBuffer(message.value);

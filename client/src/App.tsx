@@ -39,7 +39,6 @@ function App() {
 
     socket.on("update", (data: Events[]) => {
       if (length >= 60) {
-        console.log(length);
         dequeue();
       } else {
         addToQueue(data);
