@@ -3,20 +3,19 @@ dotenv.config();
 
 import express from "express";
 import { Server } from "socket.io";
-import Kafka from "node-rdkafka";
+import { Kafka, logLevel } from "kafkajs";
 import eventType from "./eventType.js";
 
-const port = 5000 || parseInt(process.env.PORT);
-const topics = process.env.KAFKA_TOPICS.split(",");
+const PORT = 5000 || parseInt(process.env.PORT);
+const TOPICS = process.env.KAFKA_TOPICS.split(",");
+const BROKERS = process.env.KAFKA_BROKER.split(",");
 
 const BROKER =
-  process.env.NODE_ENV === "production"
-    ? process.env.KAFKA_BROKER
-    : "localhost:9092";
+  process.env.NODE_ENV === "production" ? BROKERS : ["localhost:9092"];
 
 const app = express();
 
-const server = app.listen(port, () => {
+const server = app.listen(PORT, () => {
   console.log(`Listening on port ${server.address().port}`);
 });
 const io = new Server(server, {
@@ -25,14 +24,43 @@ const io = new Server(server, {
   },
 });
 
-const consumer = Kafka.KafkaConsumer(
-  {
-    "group.id": "kafka",
-    "metadata.broker.list": BROKER,
-  },
-  {}
-);
-consumer.connect();
+const kafka = new Kafka({
+  logLevel: logLevel.INFO,
+  brokers: BROKER,
+  clinetID: "monitoring",
+});
+
+const consumer = kafka.consumer({ groupId: "kafka" });
+
+const run = async () => {
+  await consumer.connect();
+  await consumer.subscribe({ topics: TOPICS, fromBeginning: true });
+  await consumer.run({
+    eachBatch: async ({
+      batch,
+      resolveOffset,
+      heartbeat,
+      isRunning,
+      isStale,
+    }) => {
+      const events = batch.messages.map((message) => {
+        return eventType.fromBuffer(message.value);
+      });
+
+      callSockets(io, events);
+      await heartbeat();
+    },
+    /* eachMessage: async ({ topic, partition, message }) => {
+      const event = eventType.fromBuffer(message.value);
+      callSockets(io, JSON.stringify(event));
+    }, */
+  });
+};
+
+run().catch((error) => {
+  console.log("\x1b[31m%s\x1b[0m", "New consumer error!");
+  console.error(error);
+});
 
 io.on("connection", (socket) => {
   console.log("\x1b[36m%s\x1b[0m", `Connected: ${socket.id}`);
@@ -42,18 +70,33 @@ io.on("connection", (socket) => {
   });
 });
 
-consumer
-  .on("ready", () => {
-    console.log("\x1b[32m%s\x1b[0m", "Consumer ready");
-    consumer.subscribe(topics);
-    consumer.consume();
-  })
-  .on("data", (data) => {
-    const event = eventType.fromBuffer(data.value);
-    callSockets(io, JSON.stringify(event));
-    console.log(JSON.stringify(event));
+const errorTypes = ["unhandledRejection", "uncaughtException"];
+const signalTraps = ["SIGTERM", "SIGINT", "SIGUSR2"];
+
+errorTypes.forEach((type) => {
+  process.on(type, async (e) => {
+    try {
+      console.log(`process.on ${type}`);
+      console.error(e);
+      await consumer.disconnect();
+      process.exit(0);
+    } catch (_) {
+      process.exit(1);
+    }
   });
+});
+
+signalTraps.forEach((type) => {
+  process.once(type, async () => {
+    try {
+      await consumer.disconnect();
+    } finally {
+      process.kill(process.pid, type);
+    }
+  });
+});
 
 const callSockets = (io, message) => {
+  console.log(message);
   io.sockets.emit("update", message);
 };

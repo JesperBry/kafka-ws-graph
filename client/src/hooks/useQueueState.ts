@@ -1,7 +1,6 @@
 import { useCallback, useState } from "react";
 /**
  * useQueueState
- * Manages a queue with react hooks.
  * @param initialList Initial value of the list
  * @returns The list and controls to modify the queue
  */
@@ -9,7 +8,7 @@ function useQueueState<T>(initialList: T[]): [
   T[],
   {
     dequeue: () => T | undefined;
-    enqueue: (item: T) => number;
+    enqueue: (item: T[]) => number;
     length: number;
     peek: () => T | undefined;
   }
@@ -17,8 +16,8 @@ function useQueueState<T>(initialList: T[]): [
   const [list, setList] = useState<T[]>([...initialList]);
 
   const enqueue = useCallback(
-    (item: T) => {
-      const newList = [...list, item];
+    (item: T[]) => {
+      const newList = [...list, ...item];
 
       setList(newList);
 
