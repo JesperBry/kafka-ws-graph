@@ -78,5 +78,5 @@ services:
     command: |
       "
       echo -e 'Creating kafka topics'
-      kafka-topics --bootstrap-server broker:9092 --create --if-not-exists --partitions 1 --replication-factor 1 --topic events
+      kafka-topics --bootstrap-server broker:9092 --create --if-not-exists --topic events
       "

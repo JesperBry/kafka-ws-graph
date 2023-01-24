@@ -19,7 +19,7 @@ type Props = {
   type?: "value" | "percent";
 };
 
-const LineGraph = ({ data, dkey, name, theme, type }: Props) => {
+const LineGraph = ({ data, dkey, name, theme = "light", type }: Props) => {
   const themes: any = {
     light: {
       backgroundColor: "#ffffff",
@@ -76,7 +76,7 @@ const LineGraph = ({ data, dkey, name, theme, type }: Props) => {
           isAnimationActive={false}
           dataKey={dkey}
           name={name}
-          stroke={themes[theme].stroke}
+          stroke={themes[theme]?.stroke}
           dot={false}
         />
       </LineChart>
