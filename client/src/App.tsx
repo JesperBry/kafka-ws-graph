@@ -57,18 +57,26 @@ function App() {
         <ThemeIcon theme={theme} />
       </div>
       <div className="graph-wrapper">
-        <LineGraph data={list} theme={theme} name="CPU usage" dkey="cpu" />
+        <LineGraph
+          data={list}
+          theme={theme}
+          name="CPU usage"
+          dkey="cpu"
+          type="percent"
+        />
         <LineGraph
           data={list}
           theme={theme}
           name="Memory usage"
           dkey="memory"
+          type="percent"
         />
         <LineGraph
           data={list}
           theme={theme}
           name="Process uptime"
           dkey="uptime"
+          type="value"
         />
       </div>
     </div>

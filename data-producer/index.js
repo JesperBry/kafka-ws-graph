@@ -38,6 +38,7 @@ stream.on("error", function (err) {
 });
 
 setInterval(() => {
+  //console.log(os.totalmem(), os.freememPercentage());
   os.cpuUsage((cpuPercent) => {
     sendEvent(cpuPercent);
   });
