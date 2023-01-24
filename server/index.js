@@ -6,17 +6,16 @@ import { Server } from "socket.io";
 import { Kafka, logLevel } from "kafkajs";
 import eventType from "./eventType.js";
 
-const port = 5000 || parseInt(process.env.PORT);
-const topics = process.env.KAFKA_TOPICS.split(",");
+const PORT = 5000 || parseInt(process.env.PORT);
+const TOPICS = process.env.KAFKA_TOPICS.split(",");
+const BROKERS = process.env.KAFKA_BROKER.split(",");
 
 const BROKER =
-  process.env.NODE_ENV === "production"
-    ? process.env.KAFKA_BROKER
-    : "localhost:9092";
+  process.env.NODE_ENV === "production" ? BROKERS : ["localhost:9092"];
 
 const app = express();
 
-const server = app.listen(port, () => {
+const server = app.listen(PORT, () => {
   console.log(`Listening on port ${server.address().port}`);
 });
 const io = new Server(server, {
@@ -27,7 +26,7 @@ const io = new Server(server, {
 
 const kafka = new Kafka({
   logLevel: logLevel.INFO,
-  brokers: [BROKER],
+  brokers: BROKER,
   clinetID: "monitoring",
 });
 
@@ -35,7 +34,7 @@ const consumer = kafka.consumer({ groupId: "kafka" });
 
 const run = async () => {
   await consumer.connect();
-  await consumer.subscribe({ topics: topics, fromBeginning: true });
+  await consumer.subscribe({ topics: TOPICS, fromBeginning: true });
   await consumer.run({
     eachBatch: async ({
       batch,

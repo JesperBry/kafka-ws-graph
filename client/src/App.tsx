@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useQueueState } from "./hooks/useQueueState";
 import { io } from "socket.io-client";
 import LineGraph from "./components/LineGraph";
