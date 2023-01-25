@@ -5,7 +5,7 @@ const usePersistedState = <T>(
   initialState: T
 ): [T, Dispatch<T>] => {
   const [state, setState] = useState<T>(
-    localStorage.getItem(key) !== undefined
+    localStorage.getItem(key) !== null || undefined
       ? JSON.parse(localStorage.getItem(key) as string)
       : initialState
   );

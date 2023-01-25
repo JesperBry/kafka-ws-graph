@@ -9,10 +9,12 @@ import eventType from "./eventType.js";
 const PORT = 5000 || parseInt(process.env.PORT);
 const TOPICS = process.env.KAFKA_TOPICS.split(",");
 const BROKERS = process.env.KAFKA_BROKER.split(",");
+const OFFCET_POINTS = parseInt(process.env.KAFKA_ADMIN_OFFCET_POINTS);
 
 const BROKER =
   process.env.NODE_ENV === "production" ? BROKERS : ["localhost:9092"];
 
+let clients = [];
 const app = express();
 
 const server = app.listen(PORT, () => {
@@ -30,20 +32,28 @@ const kafka = new Kafka({
   clinetID: "monitoring",
 });
 
+const admin = kafka.admin();
+
 const consumer = kafka.consumer({ groupId: "kafka" });
+
+const offcet = async () => {
+  await admin.connect();
+  const offcet = await admin.fetchTopicOffsets(TOPICS[0]);
+  consumer.seek({
+    topic: TOPICS[0],
+    partition: 0,
+    offset: offcet[0].high - OFFCET_POINTS,
+  });
+  await admin.disconnect();
+};
 
 const run = async () => {
   await consumer.connect();
   await consumer.subscribe({ topics: TOPICS, fromBeginning: true });
   await consumer.run({
-    eachBatch: async ({
-      batch,
-      resolveOffset,
-      heartbeat,
-      isRunning,
-      isStale,
-    }) => {
+    eachBatch: async ({ batch, resolveOffset, heartbeat }) => {
       const events = batch.messages.map((message) => {
+        resolveOffset(message.offset);
         return eventType.fromBuffer(message.value);
       });
 
@@ -62,8 +72,10 @@ run().catch((error) => {
   console.error(error);
 });
 
-io.on("connection", (socket) => {
+io.on("connection", async (socket) => {
   console.log("\x1b[36m%s\x1b[0m", `Connected: ${socket.id}`);
+  clients.push(socket.id);
+  await offcet();
 
   socket.on("disconnect", () => {
     console.log("\x1b[36m%s\x1b[0m", `Client: ${socket.id} - disconnected`);

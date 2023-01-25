@@ -7,8 +7,11 @@ import ThemeIcon from "./assets/themeIcon";
 
 import "./App.css";
 import usePersistedState from "./hooks/usePersistedState";
+import IconButton from "./components/IconButton";
 
 const SOCKET_URL: string = process.env.REACT_APP_SOCKET_URL || "";
+const OFFCET_POINTS: number =
+  parseInt(process.env.REACT_APP_OFFCET_POINTS as string) || 60;
 
 const socket = io(SOCKET_URL);
 
@@ -38,7 +41,7 @@ function App() {
     }
 
     socket.on("update", (data: Events[]) => {
-      if (length >= 60) {
+      if (length >= OFFCET_POINTS) {
         dequeue();
       } else {
         addToQueue(data);
@@ -48,14 +51,9 @@ function App() {
 
   return (
     <div className={`App ${theme}`}>
-      <div
-        className="icon-button"
-        onClick={() => {
-          toggleTheme();
-        }}
-      >
+      <IconButton onClick={() => toggleTheme()}>
         <ThemeIcon theme={theme} />
-      </div>
+      </IconButton>
       <div className="graph-wrapper">
         <LineGraph
           data={list}

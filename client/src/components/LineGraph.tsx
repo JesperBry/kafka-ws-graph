@@ -62,7 +62,7 @@ const LineGraph = ({ data, dkey, name, theme = "light", type }: Props) => {
       >
         <XAxis domain={[0, 60]} tickCount={60} hide />
         <YAxis hide />
-        <CartesianGrid vertical={false} />
+        <CartesianGrid vertical={false} fillOpacity={1} />
         <Tooltip
           labelStyle={{ display: "none" }}
           wrapperStyle={{ outline: "none" }}
