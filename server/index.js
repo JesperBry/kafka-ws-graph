@@ -14,7 +14,6 @@ const OFFCET_POINTS = parseInt(process.env.KAFKA_ADMIN_OFFCET_POINTS);
 const BROKER =
   process.env.NODE_ENV === "production" ? BROKERS : ["localhost:9092"];
 
-let clients = [];
 const app = express();
 
 const server = app.listen(PORT, () => {
@@ -74,7 +73,7 @@ run().catch((error) => {
 
 io.on("connection", async (socket) => {
   console.log("\x1b[36m%s\x1b[0m", `Connected: ${socket.id}`);
-  clients.push(socket.id);
+
   await offcet();
 
   socket.on("disconnect", () => {
